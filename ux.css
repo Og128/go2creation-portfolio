@@ -7,3 +7,177 @@
 .events-back{position:fixed;z-index:19;left:1.5rem;bottom:1.5rem;display:flex;align-items:center;gap:.8rem;padding:.75rem 1rem .75rem .75rem;background:var(--red);color:#fff;box-shadow:0 8px 30px rgba(0,0,0,.4);font-size:.67rem;text-transform:uppercase;letter-spacing:.12em}.events-back b{display:grid;place-items:center;width:34px;height:34px;background:white;color:#111;font-size:1.1rem}.events-back:hover{background:white;color:#111}.events-back:hover b{background:var(--red);color:white}
 a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #ffd54a;outline-offset:3px}.studio-page{min-height:100vh;background:#101010}.studio-panel{width:min(760px,calc(100% - 2rem));margin:auto;padding:4rem 0 6rem}.studio-panel>.logo{width:max-content;margin-bottom:7rem}.studio-panel h1{font:800 clamp(4rem,9vw,8rem)/.75 'Barlow Condensed';margin:1.5rem 0 3.5rem}.studio-panel h1 span{color:var(--red)}.studio-panel form label{display:flex;flex-direction:column;gap:.65rem;margin:1.2rem 0;font-size:.68rem;text-transform:uppercase;letter-spacing:.1em}.studio-panel input,.studio-panel textarea{background:#1d1d1d;border:1px solid #555;color:white;padding:1rem;font:400 .9rem 'DM Sans'}.studio-back{display:inline-block;margin-top:2rem;padding:.8rem 0;border-bottom:1px solid #777;font-size:.7rem;text-transform:uppercase;letter-spacing:.12em}
 @media(max-width:760px){.nav{height:72px}.logo{min-height:44px}.menu-toggle{width:46px;height:44px;padding:7px;background:rgba(255,255,255,.12)}.nav-links{gap:.65rem}.nav-links a{font-size:2.6rem;min-width:75vw;justify-content:center;border-color:rgba(255,255,255,.35)}.home-feature div b{justify-self:start}.events-back{left:.75rem;bottom:.75rem}.studio-panel>.logo{margin-bottom:5rem}}
+
+/* ==========================================================================
+   RESPONSIVE — correctifs mobile / tablette
+   ========================================================================== */
+
+/* 1. BUG MAJEUR : backdrop-filter sur .nav en faisait le bloc conteneur des
+      descendants position:fixed. Le menu plein écran (.nav-links{inset:0})
+      était donc clippé à la hauteur de la barre (72px) : illisible, intouchable.
+      Le flou passe sur un pseudo-élément, .nav redevient un parent neutre. */
+.nav{backdrop-filter:none;-webkit-backdrop-filter:none;background:transparent;border-bottom:0}
+.nav:before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(8,8,8,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.14)}
+
+/* 2. Encoches / barres système (iPhone, Android gestuel) */
+.nav{padding-left:max(4vw,env(safe-area-inset-left));padding-right:max(4vw,env(safe-area-inset-right))}
+.events-back{bottom:max(.75rem,env(safe-area-inset-bottom));left:max(.75rem,env(safe-area-inset-left))}
+
+/* 3. Barre serrée en tablette / petit portable */
+@media(min-width:761px) and (max-width:1024px){
+  .nav-links{gap:.1rem}
+  .nav-links a{padding:.7rem .7rem;font-size:.64rem;letter-spacing:.1em}
+  .nav-client-top{font-size:.62rem;letter-spacing:.1em}
+}
+
+@media(max-width:760px){
+  /* 4. Menu plein écran : scrollable, cibles tactiles correctes */
+  .nav-links{padding:5.5rem 5vw 2rem;overflow-y:auto;overscroll-behavior:contain;gap:.65rem}
+  .nav-links a{font-size:clamp(1.5rem,7vw,2.6rem);min-width:min(75vw,340px);max-width:100%}
+
+  /* 5. HERO : c'était un empilement d'éléments en position absolue qui se
+        chevauchaient (titre sous le bouton, kicker sous le compteur), avec un
+        min-height:650px plus haut que l'écran. Passage en flux vertical. */
+  .hero{height:auto;min-height:100vh;min-height:100svh;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:1.2rem;padding:7rem 5vw 3rem}
+  .hero-kicker,.hero-title,.scroll-link{position:relative;z-index:1;top:auto;right:auto;bottom:auto;left:auto;width:100%}
+  .hero h1{font-size:19vw;line-height:.78}
+  .hero-number{display:none}
+  .scroll-link{justify-content:space-between;gap:1rem}
+
+  /* 6. Blocs internes trop serrés */
+  .intro-meta{flex-direction:column;align-items:flex-start;gap:2rem}
+  .intro-meta>p:first-child{max-width:none}
+  .about-strip{height:auto;min-height:60vh;padding:4rem 5vw;display:flex;align-items:flex-end}
+  .about-strip img{position:absolute;inset:0}
+  .about-strip blockquote{position:relative;z-index:1;left:auto;bottom:auto;max-width:none;font-size:clamp(1.8rem,7vw,2.6rem)}
+  .page-hero{padding:8rem 5vw 3rem;min-height:65vh}
+  .page-hero h1{font-size:20vw}
+  .site-footer{flex-wrap:wrap;gap:.6rem}
+}
+
+/* 7. Paysage sur téléphone : écran très bas, on compacte le menu */
+@media(max-width:900px) and (max-height:520px){
+  .nav-links{justify-content:flex-start;padding-top:4.5rem}
+  .nav-links a{font-size:1.4rem;min-height:40px;padding:.5rem 1rem}
+  .hero{min-height:auto;padding-top:5.5rem}
+  .hero h1{font-size:11vw}
+}
+
+/* 8. Garde-fou : plus aucun débordement horizontal */
+img,video,iframe{max-width:100%}
+
+/* ==========================================================================
+   CORRECTIFS — 2e passe
+   ========================================================================== */
+
+/* A. « Vos Photos » : dans la barre en desktop, dans le menu burger en mobile.
+      Deux ancres, une seule visible à la fois selon le breakpoint. */
+.nav-links .nav-client-menu{display:none;border-color:rgba(242,52,36,.85)}
+@media(max-width:760px){
+  .nav-client-top{display:none}
+  .nav-links .nav-client-menu{display:flex}
+}
+
+/* B. Le bouton flottant « Tous les événements » recouvrait le footer.
+      On réserve sa hauteur sous le footer, uniquement sur les pages concernées. */
+.events-back ~ .site-footer{padding-bottom:calc(5rem + env(safe-area-inset-bottom))}
+
+
+/* ==========================================================================
+   CORRECTIFS — 3e passe : lien externe + respiration mobile
+   ========================================================================== */
+
+/* A. « Vos Photos » signalé comme lien sortant (flèche ↗) et détaché du menu */
+@media(min-width:761px){.nav-client-top{display:inline-flex;align-items:center;gap:.45rem}}
+.nav-client b{font-weight:400;font-size:.9em;line-height:1}
+.nav-links .nav-client-menu{gap:.6rem}
+@media(max-width:760px){
+  /* écart net entre « Contact » et le lien externe */
+  .nav-links .nav-client-menu{margin-top:1.9rem}
+}
+
+/* B. Trop de vide vertical en mobile — on resserre l'ensemble des sections. */
+@media(max-width:760px){
+  .section-pad{padding:4rem 5vw}
+  .intro{min-height:auto}
+  .statement{margin:1.5rem 0 2.5rem}
+  .intro-meta{gap:1.5rem}
+  .marquee{padding:1.75rem 0}
+  .feature-info{padding:1.5rem 0 3.5rem}
+  .event-card>div:last-child{padding:1.25rem 0 3rem}
+  .gallery-grid,.gallery-more{padding:2.5rem 4vw}
+  .home-cta{padding-top:4.5rem}
+  .contact h2{margin:1.5rem 0 2.5rem}
+  .mail{padding:1.4rem 1.1rem}
+  .about h2{margin:1.25rem 0 2rem}
+  .about-copy{padding-top:1.5rem}
+  .clients{margin-top:2rem}
+  .about-strip{min-height:50vh;padding:3rem 5vw}
+  .page-hero{padding:7rem 5vw 2.5rem;min-height:55vh}
+  .contact-page{padding:7rem 5vw 3rem}
+  .contact-lead{margin-bottom:2rem}
+  .availability{margin-top:2rem}
+  .archive-hero{padding:7rem 5vw 2.5rem;min-height:auto}
+  .archive-hero h1{margin:1.25rem 0}
+  .archive-hero>div{gap:1.25rem}
+  .event-archive{padding-top:3rem}
+  .archive-toolbar{margin-bottom:2rem}
+  .event-tile{height:58vh;margin-bottom:.75rem}
+  .event-detail-hero{height:62vh}
+  .event-detail-hero>div:last-child{bottom:2rem}
+  .event-photo-grid{padding:0 5vw 3rem}
+  .studio-panel{padding:3rem 0 4rem}
+  .studio-panel>.logo{margin-bottom:2.5rem}
+  .studio-panel h1{margin:1rem 0 2rem}
+}
+
+/* ==========================================================================
+   GRILLE MASONRY — page reportage
+   Colonnes CSS (multi-column) : chaque photo garde son ratio naturel et se
+   place dans la colonne la plus courte. Aucun recadrage, aucun trou sous les
+   photos courtes. Le nombre de colonnes s'adapte au nombre de photos.
+   Rappel : l'ordre de lecture est vertical (colonne par colonne).
+   ========================================================================== */
+.event-photo-grid{display:block;columns:3;column-gap:1.2vw;orphans:1;widows:1}
+.event-photo-grid .gallery-item{display:block;width:100%;margin:0 0 1.2vw;break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid}
+.event-photo-grid .gallery-item img{display:block;width:100%;height:auto;object-fit:contain}
+
+/* peu de photos : on élargit plutôt que de les réduire en vignettes */
+.event-photo-grid:has(.gallery-item:nth-child(-n+2):last-child){columns:1;max-width:1100px;margin-inline:auto}
+.event-photo-grid:has(.gallery-item:nth-child(3):last-child),
+.event-photo-grid:has(.gallery-item:nth-child(4):last-child){columns:2;column-gap:1.6vw}
+.event-photo-grid:has(.gallery-item:nth-child(3):last-child) .gallery-item,
+.event-photo-grid:has(.gallery-item:nth-child(4):last-child) .gallery-item{margin-bottom:1.6vw}
+
+@media(max-width:760px){
+  .event-photo-grid{columns:2;column-gap:2vw}
+  .event-photo-grid .gallery-item{margin-bottom:2vw}
+  .event-photo-grid:has(.gallery-item:nth-child(-n+2):last-child){columns:1}
+  .event-photo-grid:has(.gallery-item:nth-child(3):last-child),
+  .event-photo-grid:has(.gallery-item:nth-child(4):last-child){columns:2;column-gap:2vw}
+}
+
+/* ==========================================================================
+   FORMULAIRE DE CONTACT (page contact)
+   ========================================================================== */
+.contact-form{margin:0 0 2.5rem;max-width:620px;background:rgba(10,10,10,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);padding:2rem}
+.contact-form label{display:flex;flex-direction:column;gap:.6rem;margin:0 0 1.1rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#ddd}
+.contact-form input,.contact-form textarea{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.28);color:#fff;padding:.95rem 1rem;font:400 .9rem 'DM Sans';border-radius:2px;resize:vertical;width:100%}
+.contact-form input::placeholder,.contact-form textarea::placeholder{color:#7d7d7d}
+.contact-form input:focus,.contact-form textarea:focus{border-color:var(--red);background:rgba(255,255,255,.1);outline:none}
+.contact-form .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.contact-form .form-submit{width:100%;display:flex;align-items:center;justify-content:space-between;min-height:52px;margin-top:.4rem;border:1px solid var(--red);background:var(--red);color:#fff;padding:1rem 1.2rem;font:500 .7rem 'DM Sans';text-transform:uppercase;letter-spacing:.14em;cursor:pointer;transition:.2s}
+.contact-form .form-submit:hover:not(:disabled){background:#fff;border-color:#fff;color:#111}
+.contact-form .form-submit:disabled{opacity:.6;cursor:progress}
+/* piège à robots : invisible pour l'humain, rempli par les bots */
+.contact-form .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
+.form-status{margin:.9rem 0 0;font-size:.72rem;line-height:1.5;min-height:1em}
+.form-status.ok{color:#4ade80}
+.form-status.error{color:#ff8a7a}
+.form-rgpd{margin:.9rem 0 0;font-size:.6rem;line-height:1.6;color:#8a8a8a;text-transform:none;letter-spacing:.02em}
+
+@media(max-width:760px){
+  .contact-form{padding:1.4rem;margin-bottom:2rem}
+  .contact-form .form-row{grid-template-columns:1fr;gap:0}
+  .contact-page{min-height:auto}
+}
