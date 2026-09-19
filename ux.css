@@ -156,28 +156,3 @@ img,video,iframe{max-width:100%}
   .event-photo-grid:has(.gallery-item:nth-child(3):last-child),
   .event-photo-grid:has(.gallery-item:nth-child(4):last-child){columns:2;column-gap:2vw}
 }
-
-/* ==========================================================================
-   FORMULAIRE DE CONTACT (page contact)
-   ========================================================================== */
-.contact-form{margin:0 0 2.5rem;max-width:620px;background:rgba(10,10,10,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);padding:2rem}
-.contact-form label{display:flex;flex-direction:column;gap:.6rem;margin:0 0 1.1rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#ddd}
-.contact-form input,.contact-form textarea{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.28);color:#fff;padding:.95rem 1rem;font:400 .9rem 'DM Sans';border-radius:2px;resize:vertical;width:100%}
-.contact-form input::placeholder,.contact-form textarea::placeholder{color:#7d7d7d}
-.contact-form input:focus,.contact-form textarea:focus{border-color:var(--red);background:rgba(255,255,255,.1);outline:none}
-.contact-form .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.contact-form .form-submit{width:100%;display:flex;align-items:center;justify-content:space-between;min-height:52px;margin-top:.4rem;border:1px solid var(--red);background:var(--red);color:#fff;padding:1rem 1.2rem;font:500 .7rem 'DM Sans';text-transform:uppercase;letter-spacing:.14em;cursor:pointer;transition:.2s}
-.contact-form .form-submit:hover:not(:disabled){background:#fff;border-color:#fff;color:#111}
-.contact-form .form-submit:disabled{opacity:.6;cursor:progress}
-/* piège à robots : invisible pour l'humain, rempli par les bots */
-.contact-form .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
-.form-status{margin:.9rem 0 0;font-size:.72rem;line-height:1.5;min-height:1em}
-.form-status.ok{color:#4ade80}
-.form-status.error{color:#ff8a7a}
-.form-rgpd{margin:.9rem 0 0;font-size:.6rem;line-height:1.6;color:#8a8a8a;text-transform:none;letter-spacing:.02em}
-
-@media(max-width:760px){
-  .contact-form{padding:1.4rem;margin-bottom:2rem}
-  .contact-form .form-row{grid-template-columns:1fr;gap:0}
-  .contact-page{min-height:auto}
-}

@@ -30,37 +30,3 @@ document.querySelectorAll('.gallery-item').forEach(item => item.addEventListener
 }));
 lightbox?.querySelector('button').addEventListener('click', () => lightbox.close());
 lightbox?.addEventListener('click', e => { if (e.target === lightbox) lightbox.close(); });
-
-/* Formulaire de contact — envoi via Web3Forms (aucun back-end sur le serveur).
-   Sans JS, le formulaire poste normalement et affiche la page de confirmation
-   du service : la dégradation reste fonctionnelle. */
-const contactForm = document.querySelector('.contact-form');
-contactForm?.addEventListener('submit', async e => {
-  e.preventDefault();
-  const form = e.currentTarget;
-  const status = form.querySelector('.form-status');
-  const button = form.querySelector('.form-submit');
-  const original = button.innerHTML;
-  status.className = 'form-status';
-  status.textContent = '';
-  button.disabled = true;
-  button.textContent = 'Envoi en cours…';
-  try {
-    const response = await fetch(form.action, {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: new FormData(form)
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok || !data.success) throw new Error(data.message || 'Échec');
-    form.reset();
-    status.className = 'form-status ok';
-    status.textContent = 'Merci, votre message est bien parti. Réponse sous 48h.';
-  } catch (error) {
-    status.className = 'form-status error';
-    status.textContent = "L'envoi a échoué. Réessayez, ou passez par Instagram ci-dessous.";
-  } finally {
-    button.disabled = false;
-    button.innerHTML = original;
-  }
-});
